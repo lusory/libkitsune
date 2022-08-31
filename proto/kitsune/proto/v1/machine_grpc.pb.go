@@ -30,6 +30,7 @@ type VirtualMachineRegistryServiceClient interface {
 	AttachImage(ctx context.Context, in *AttachImageRequest, opts ...grpc.CallOption) (*AttachImageResponse, error)
 	DetachImage(ctx context.Context, in *DetachImageRequest, opts ...grpc.CallOption) (*DetachImageResponse, error)
 	SendACPIAction(ctx context.Context, in *SendACPIActionRequest, opts ...grpc.CallOption) (*SendACPIActionResponse, error)
+	GetVNCServer(ctx context.Context, in *GetVNCServerRequest, opts ...grpc.CallOption) (*GetVNCServerResponse, error)
 	GetMetadata(ctx context.Context, in *GetMetadataRequest, opts ...grpc.CallOption) (*GetMetadataResponse, error)
 	SetMetadata(ctx context.Context, in *SetMetadataRequest, opts ...grpc.CallOption) (*SetMetadataResponse, error)
 }
@@ -128,6 +129,15 @@ func (c *virtualMachineRegistryServiceClient) SendACPIAction(ctx context.Context
 	return out, nil
 }
 
+func (c *virtualMachineRegistryServiceClient) GetVNCServer(ctx context.Context, in *GetVNCServerRequest, opts ...grpc.CallOption) (*GetVNCServerResponse, error) {
+	out := new(GetVNCServerResponse)
+	err := c.cc.Invoke(ctx, "/kitsune.proto.v1.VirtualMachineRegistryService/GetVNCServer", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 func (c *virtualMachineRegistryServiceClient) GetMetadata(ctx context.Context, in *GetMetadataRequest, opts ...grpc.CallOption) (*GetMetadataResponse, error) {
 	out := new(GetMetadataResponse)
 	err := c.cc.Invoke(ctx, "/kitsune.proto.v1.VirtualMachineRegistryService/GetMetadata", in, out, opts...)
@@ -157,6 +167,7 @@ type VirtualMachineRegistryServiceServer interface {
 	AttachImage(context.Context, *AttachImageRequest) (*AttachImageResponse, error)
 	DetachImage(context.Context, *DetachImageRequest) (*DetachImageResponse, error)
 	SendACPIAction(context.Context, *SendACPIActionRequest) (*SendACPIActionResponse, error)
+	GetVNCServer(context.Context, *GetVNCServerRequest) (*GetVNCServerResponse, error)
 	GetMetadata(context.Context, *GetMetadataRequest) (*GetMetadataResponse, error)
 	SetMetadata(context.Context, *SetMetadataRequest) (*SetMetadataResponse, error)
 	mustEmbedUnimplementedVirtualMachineRegistryServiceServer()
@@ -186,6 +197,9 @@ func (UnimplementedVirtualMachineRegistryServiceServer) DetachImage(context.Cont
 }
 func (UnimplementedVirtualMachineRegistryServiceServer) SendACPIAction(context.Context, *SendACPIActionRequest) (*SendACPIActionResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method SendACPIAction not implemented")
+}
+func (UnimplementedVirtualMachineRegistryServiceServer) GetVNCServer(context.Context, *GetVNCServerRequest) (*GetVNCServerResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetVNCServer not implemented")
 }
 func (UnimplementedVirtualMachineRegistryServiceServer) GetMetadata(context.Context, *GetMetadataRequest) (*GetMetadataResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetMetadata not implemented")
@@ -336,6 +350,24 @@ func _VirtualMachineRegistryService_SendACPIAction_Handler(srv interface{}, ctx 
 	return interceptor(ctx, in, info, handler)
 }
 
+func _VirtualMachineRegistryService_GetVNCServer_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetVNCServerRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(VirtualMachineRegistryServiceServer).GetVNCServer(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/kitsune.proto.v1.VirtualMachineRegistryService/GetVNCServer",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(VirtualMachineRegistryServiceServer).GetVNCServer(ctx, req.(*GetVNCServerRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 func _VirtualMachineRegistryService_GetMetadata_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(GetMetadataRequest)
 	if err := dec(in); err != nil {
@@ -402,6 +434,10 @@ var VirtualMachineRegistryService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "SendACPIAction",
 			Handler:    _VirtualMachineRegistryService_SendACPIAction_Handler,
+		},
+		{
+			MethodName: "GetVNCServer",
+			Handler:    _VirtualMachineRegistryService_GetVNCServer_Handler,
 		},
 		{
 			MethodName: "GetMetadata",
