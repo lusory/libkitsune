@@ -59,7 +59,7 @@ func NewKitsuneClient(target string, ssl bool) (*KitsuneClient, error) {
 // creating a new KitsuneClient and inserting it into the cache if not successful.
 func NewOrCachedKitsuneClient(target string, ssl bool) (*KitsuneClient, error) {
 	if client, ok := clientCache[target]; ok {
-		return &client, nil
+		return client, nil
 	}
 
 	client, err := NewKitsuneClient(target, ssl)
