@@ -10,7 +10,7 @@ import (
 )
 
 // clientCache is a global cache for NewOrCachedKitsuneClient.
-var clientCache = make(map[string]KitsuneClient)
+var clientCache = make(map[string]*KitsuneClient)
 
 // KitsuneClient is an implementation of KitsuneClientInterface and a collection of a grpc.ClientConnInterface
 // and the services provided over that connection.
@@ -68,5 +68,5 @@ func NewOrCachedKitsuneClient(target string, ssl bool) (*KitsuneClient, error) {
 	}
 
 	clientCache[target] = client
-	return &client, nil
+	return client, nil
 }
