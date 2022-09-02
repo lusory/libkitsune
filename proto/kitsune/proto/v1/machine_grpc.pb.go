@@ -26,7 +26,9 @@ type VirtualMachineRegistryServiceClient interface {
 	GetVirtualMachines(ctx context.Context, in *emptypb.Empty, opts ...grpc.CallOption) (VirtualMachineRegistryService_GetVirtualMachinesClient, error)
 	FindVirtualMachine(ctx context.Context, in *FindVirtualMachineRequest, opts ...grpc.CallOption) (*FindVirtualMachineResponse, error)
 	CreateVirtualMachine(ctx context.Context, in *CreateVirtualMachineRequest, opts ...grpc.CallOption) (*CreateVirtualMachineResponse, error)
+	DeleteVirtualMachine(ctx context.Context, in *DeleteVirtualMachineRequest, opts ...grpc.CallOption) (*DeleteVirtualMachineResponse, error)
 	IsAlive(ctx context.Context, in *IsAliveRequest, opts ...grpc.CallOption) (*IsAliveResponse, error)
+	GetAttachedImages(ctx context.Context, in *GetAttachedImagesRequest, opts ...grpc.CallOption) (*GetAttachedImagesResponse, error)
 	AttachImage(ctx context.Context, in *AttachImageRequest, opts ...grpc.CallOption) (*AttachImageResponse, error)
 	DetachImage(ctx context.Context, in *DetachImageRequest, opts ...grpc.CallOption) (*DetachImageResponse, error)
 	SendACPIAction(ctx context.Context, in *SendACPIActionRequest, opts ...grpc.CallOption) (*SendACPIActionResponse, error)
@@ -93,9 +95,27 @@ func (c *virtualMachineRegistryServiceClient) CreateVirtualMachine(ctx context.C
 	return out, nil
 }
 
+func (c *virtualMachineRegistryServiceClient) DeleteVirtualMachine(ctx context.Context, in *DeleteVirtualMachineRequest, opts ...grpc.CallOption) (*DeleteVirtualMachineResponse, error) {
+	out := new(DeleteVirtualMachineResponse)
+	err := c.cc.Invoke(ctx, "/kitsune.proto.v1.VirtualMachineRegistryService/DeleteVirtualMachine", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 func (c *virtualMachineRegistryServiceClient) IsAlive(ctx context.Context, in *IsAliveRequest, opts ...grpc.CallOption) (*IsAliveResponse, error) {
 	out := new(IsAliveResponse)
 	err := c.cc.Invoke(ctx, "/kitsune.proto.v1.VirtualMachineRegistryService/IsAlive", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *virtualMachineRegistryServiceClient) GetAttachedImages(ctx context.Context, in *GetAttachedImagesRequest, opts ...grpc.CallOption) (*GetAttachedImagesResponse, error) {
+	out := new(GetAttachedImagesResponse)
+	err := c.cc.Invoke(ctx, "/kitsune.proto.v1.VirtualMachineRegistryService/GetAttachedImages", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -163,7 +183,9 @@ type VirtualMachineRegistryServiceServer interface {
 	GetVirtualMachines(*emptypb.Empty, VirtualMachineRegistryService_GetVirtualMachinesServer) error
 	FindVirtualMachine(context.Context, *FindVirtualMachineRequest) (*FindVirtualMachineResponse, error)
 	CreateVirtualMachine(context.Context, *CreateVirtualMachineRequest) (*CreateVirtualMachineResponse, error)
+	DeleteVirtualMachine(context.Context, *DeleteVirtualMachineRequest) (*DeleteVirtualMachineResponse, error)
 	IsAlive(context.Context, *IsAliveRequest) (*IsAliveResponse, error)
+	GetAttachedImages(context.Context, *GetAttachedImagesRequest) (*GetAttachedImagesResponse, error)
 	AttachImage(context.Context, *AttachImageRequest) (*AttachImageResponse, error)
 	DetachImage(context.Context, *DetachImageRequest) (*DetachImageResponse, error)
 	SendACPIAction(context.Context, *SendACPIActionRequest) (*SendACPIActionResponse, error)
@@ -186,8 +208,14 @@ func (UnimplementedVirtualMachineRegistryServiceServer) FindVirtualMachine(conte
 func (UnimplementedVirtualMachineRegistryServiceServer) CreateVirtualMachine(context.Context, *CreateVirtualMachineRequest) (*CreateVirtualMachineResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method CreateVirtualMachine not implemented")
 }
+func (UnimplementedVirtualMachineRegistryServiceServer) DeleteVirtualMachine(context.Context, *DeleteVirtualMachineRequest) (*DeleteVirtualMachineResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method DeleteVirtualMachine not implemented")
+}
 func (UnimplementedVirtualMachineRegistryServiceServer) IsAlive(context.Context, *IsAliveRequest) (*IsAliveResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method IsAlive not implemented")
+}
+func (UnimplementedVirtualMachineRegistryServiceServer) GetAttachedImages(context.Context, *GetAttachedImagesRequest) (*GetAttachedImagesResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetAttachedImages not implemented")
 }
 func (UnimplementedVirtualMachineRegistryServiceServer) AttachImage(context.Context, *AttachImageRequest) (*AttachImageResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method AttachImage not implemented")
@@ -278,6 +306,24 @@ func _VirtualMachineRegistryService_CreateVirtualMachine_Handler(srv interface{}
 	return interceptor(ctx, in, info, handler)
 }
 
+func _VirtualMachineRegistryService_DeleteVirtualMachine_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(DeleteVirtualMachineRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(VirtualMachineRegistryServiceServer).DeleteVirtualMachine(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/kitsune.proto.v1.VirtualMachineRegistryService/DeleteVirtualMachine",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(VirtualMachineRegistryServiceServer).DeleteVirtualMachine(ctx, req.(*DeleteVirtualMachineRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 func _VirtualMachineRegistryService_IsAlive_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(IsAliveRequest)
 	if err := dec(in); err != nil {
@@ -292,6 +338,24 @@ func _VirtualMachineRegistryService_IsAlive_Handler(srv interface{}, ctx context
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(VirtualMachineRegistryServiceServer).IsAlive(ctx, req.(*IsAliveRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _VirtualMachineRegistryService_GetAttachedImages_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetAttachedImagesRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(VirtualMachineRegistryServiceServer).GetAttachedImages(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/kitsune.proto.v1.VirtualMachineRegistryService/GetAttachedImages",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(VirtualMachineRegistryServiceServer).GetAttachedImages(ctx, req.(*GetAttachedImagesRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -420,8 +484,16 @@ var VirtualMachineRegistryService_ServiceDesc = grpc.ServiceDesc{
 			Handler:    _VirtualMachineRegistryService_CreateVirtualMachine_Handler,
 		},
 		{
+			MethodName: "DeleteVirtualMachine",
+			Handler:    _VirtualMachineRegistryService_DeleteVirtualMachine_Handler,
+		},
+		{
 			MethodName: "IsAlive",
 			Handler:    _VirtualMachineRegistryService_IsAlive_Handler,
+		},
+		{
+			MethodName: "GetAttachedImages",
+			Handler:    _VirtualMachineRegistryService_GetAttachedImages_Handler,
 		},
 		{
 			MethodName: "AttachImage",
