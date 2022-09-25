@@ -32,7 +32,7 @@ type VirtualMachineRegistryServiceClient interface {
 	AttachImage(ctx context.Context, in *AttachImageRequest, opts ...grpc.CallOption) (*AttachImageResponse, error)
 	DetachImage(ctx context.Context, in *DetachImageRequest, opts ...grpc.CallOption) (*DetachImageResponse, error)
 	SendACPIAction(ctx context.Context, in *SendACPIActionRequest, opts ...grpc.CallOption) (*SendACPIActionResponse, error)
-	GetVNCServer(ctx context.Context, in *GetVNCServerRequest, opts ...grpc.CallOption) (*GetVNCServerResponse, error)
+	GetVNCServers(ctx context.Context, in *GetVNCServersRequest, opts ...grpc.CallOption) (*GetVNCServersResponse, error)
 	GetMetadata(ctx context.Context, in *GetMetadataRequest, opts ...grpc.CallOption) (*GetMetadataResponse, error)
 	SetMetadata(ctx context.Context, in *SetMetadataRequest, opts ...grpc.CallOption) (*SetMetadataResponse, error)
 }
@@ -149,9 +149,9 @@ func (c *virtualMachineRegistryServiceClient) SendACPIAction(ctx context.Context
 	return out, nil
 }
 
-func (c *virtualMachineRegistryServiceClient) GetVNCServer(ctx context.Context, in *GetVNCServerRequest, opts ...grpc.CallOption) (*GetVNCServerResponse, error) {
-	out := new(GetVNCServerResponse)
-	err := c.cc.Invoke(ctx, "/kitsune.proto.v1.VirtualMachineRegistryService/GetVNCServer", in, out, opts...)
+func (c *virtualMachineRegistryServiceClient) GetVNCServers(ctx context.Context, in *GetVNCServersRequest, opts ...grpc.CallOption) (*GetVNCServersResponse, error) {
+	out := new(GetVNCServersResponse)
+	err := c.cc.Invoke(ctx, "/kitsune.proto.v1.VirtualMachineRegistryService/GetVNCServers", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -189,7 +189,7 @@ type VirtualMachineRegistryServiceServer interface {
 	AttachImage(context.Context, *AttachImageRequest) (*AttachImageResponse, error)
 	DetachImage(context.Context, *DetachImageRequest) (*DetachImageResponse, error)
 	SendACPIAction(context.Context, *SendACPIActionRequest) (*SendACPIActionResponse, error)
-	GetVNCServer(context.Context, *GetVNCServerRequest) (*GetVNCServerResponse, error)
+	GetVNCServers(context.Context, *GetVNCServersRequest) (*GetVNCServersResponse, error)
 	GetMetadata(context.Context, *GetMetadataRequest) (*GetMetadataResponse, error)
 	SetMetadata(context.Context, *SetMetadataRequest) (*SetMetadataResponse, error)
 	mustEmbedUnimplementedVirtualMachineRegistryServiceServer()
@@ -226,8 +226,8 @@ func (UnimplementedVirtualMachineRegistryServiceServer) DetachImage(context.Cont
 func (UnimplementedVirtualMachineRegistryServiceServer) SendACPIAction(context.Context, *SendACPIActionRequest) (*SendACPIActionResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method SendACPIAction not implemented")
 }
-func (UnimplementedVirtualMachineRegistryServiceServer) GetVNCServer(context.Context, *GetVNCServerRequest) (*GetVNCServerResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method GetVNCServer not implemented")
+func (UnimplementedVirtualMachineRegistryServiceServer) GetVNCServers(context.Context, *GetVNCServersRequest) (*GetVNCServersResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetVNCServers not implemented")
 }
 func (UnimplementedVirtualMachineRegistryServiceServer) GetMetadata(context.Context, *GetMetadataRequest) (*GetMetadataResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetMetadata not implemented")
@@ -414,20 +414,20 @@ func _VirtualMachineRegistryService_SendACPIAction_Handler(srv interface{}, ctx 
 	return interceptor(ctx, in, info, handler)
 }
 
-func _VirtualMachineRegistryService_GetVNCServer_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(GetVNCServerRequest)
+func _VirtualMachineRegistryService_GetVNCServers_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetVNCServersRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(VirtualMachineRegistryServiceServer).GetVNCServer(ctx, in)
+		return srv.(VirtualMachineRegistryServiceServer).GetVNCServers(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/kitsune.proto.v1.VirtualMachineRegistryService/GetVNCServer",
+		FullMethod: "/kitsune.proto.v1.VirtualMachineRegistryService/GetVNCServers",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(VirtualMachineRegistryServiceServer).GetVNCServer(ctx, req.(*GetVNCServerRequest))
+		return srv.(VirtualMachineRegistryServiceServer).GetVNCServers(ctx, req.(*GetVNCServersRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -508,8 +508,8 @@ var VirtualMachineRegistryService_ServiceDesc = grpc.ServiceDesc{
 			Handler:    _VirtualMachineRegistryService_SendACPIAction_Handler,
 		},
 		{
-			MethodName: "GetVNCServer",
-			Handler:    _VirtualMachineRegistryService_GetVNCServer_Handler,
+			MethodName: "GetVNCServers",
+			Handler:    _VirtualMachineRegistryService_GetVNCServers_Handler,
 		},
 		{
 			MethodName: "GetMetadata",
